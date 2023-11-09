@@ -21,7 +21,9 @@
                     <div class="card-header text-center" style="background-color: #0B5ED7; color: white"><h3>Daftar Buku</h3></div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
+                            @if (Auth::check() && Auth::user()->level == 'admin')
                             <a href="{{ route('buku.create') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i>&nbsp;Tambah Buku</a>
+                            @endif
                             <form action="{{ route('buku.search') }}" method="get" class="form-inline">
                                 @csrf
                                 <input type="text" name="kata" class="form-control" placeholder="Cari ..." style="float:right;">
@@ -36,7 +38,9 @@
                                     <th>Penulis</th>
                                     <th>Harga</th>
                                     <th>Tgl. Terbit DD/MM/YYYY</th>
+                                    @if (Auth::check() && Auth::user()->level == 'admin')
                                     <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,6 +51,7 @@
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ "Rp ".number_format($buku->harga, 0, ',', '.') }}</td>
                                     <td>{{\Carbon\Carbon::parse($buku->tgl_terbit)->format('d/m/Y')}}</td>
+                                    @if (Auth::check() && Auth::user()->level == 'admin')
                                     <td>
                                         <div class="btn-group" role="group" style="overflow-x: auto;">
                                             <a href="{{ route('bukuEdit', $buku->id) }}" class="btn btn-primary mr-1"><i class="fa-regular fa-pen-to-square"></i>Edit</a>
@@ -56,6 +61,7 @@
                                             </form>
                                         </div>
                                     </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>

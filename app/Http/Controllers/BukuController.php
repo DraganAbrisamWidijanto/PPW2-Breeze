@@ -136,4 +136,9 @@ class BukuController extends Controller
         $buku->delete();
         return redirect('/buku')->with('pesan', 'Data Buku Berhasil Dihapus');
     }
+
+    // public function construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 }
