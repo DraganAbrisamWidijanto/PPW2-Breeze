@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Auth::routes();
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::delete('/buku/{buku}/gallery/{gallery}', [BukuController::class, 'deleteGallery'])->name('buku.deleteGallery');
     });
 });
 

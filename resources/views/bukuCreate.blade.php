@@ -16,7 +16,7 @@
                         @endforeach
                     </ul>
                 @endif
-                <form method="POST" action="{{ route('buku.store') }}">
+                <form method="POST" action="{{ route('buku.store') }}" enctype="multipart/form-data">
                 @csrf
                     <div class="form-group">
                         <label for="inputJudul">Judul</label> 
@@ -34,6 +34,38 @@
                         <label for="inputTgl_terbit">Tanggal Terbit</label> 
                         <input type="date" class="date form-control" name="tgl_terbit" id="inputTgl_terbit" placeholder="yyyy/mm/dd">
                     </div> 
+
+                    <div class="form-group">
+                        <label for="thubnail">thubnail buku</label> 
+                        <input type="file" class="form-control" name="thumbnail" id="thumbnail">
+                    </div> 
+
+                    {{-- <div class="col-span-full mt-6">
+                        <label for="gallery" class="block text-sm font-medium leading-6 text-gray-900">Gallery</label>
+                        <div class="mt-2" id="fileinput_wrapper">
+                            <input type="file" name="gallery[]" id="gallery" class="block w-full mb-5 border border-gray-300 p-2 rounded-md">
+                            <button type="button" id="tambah" onclick="addFileInput()" class="btn btn-primary text-blue-500">Tambah Gambar Gallery</button>
+                            <script type="text/javascript">
+                                function addFileInput() {
+                                    var div = document.getElementById('fileinput_wrapper');
+                                    div.innerHTML += '<input type="file" name="gallery[]" id="gallery" class="block w-full mb-5 border border-gray-300 p-2 rounded-md">';
+                                };
+                            </script>
+                        </div>
+                    </div> --}}
+                    <div class="form-group">
+                        <label for="filepath">Gallery</label>
+                        <div id="fileinput_wrapper" class="mt-2 mb-2">
+    
+                        </div>
+                        <a href="javascript:void(0)" onclick="addFileInput()" class="btn btn-outline-primary">Tambah Gambar Gallery</a>
+                        <script type="text/javascript">
+                            function addFileInput() {
+                                var div = document.getElementById('fileinput_wrapper');
+                                div.innerHTML += '<input type="file" class="btn btn-outline-primary mb-2" id="gallery" name="gallery[]" placeholder="Gallery">';
+                            }
+                        </script>
+                    </div>
                     &nbsp;
                     <div>
                         <button type="submit" class="btn bg-blue-500 text-white">
@@ -43,6 +75,7 @@
                         <a href="/buku" class="btn btn-danger"><i class="fa-solid fa-ban"></i>&nbsp;Batal</a>
                     </div>
                 </form>
+                
             </div>
         </div>
         </x-slot>
