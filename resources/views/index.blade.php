@@ -44,6 +44,7 @@
                                 <th>Judul Buku</th>
                                 <th>Penulis</th>
                                 <th>Harga</th>
+                                <th>Buku SEO</th>
                                 <th>Tgl. Terbit DD/MM/YYYY</th>
                                 @if (Auth::check() && Auth::user()->level == 'admin')
                                 <th>Aksi</th>   
@@ -61,6 +62,7 @@
                                     <td>{{ $buku->judul }}</td>
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ "Rp ".number_format($buku->harga, 2, ',', '.') }}</td>
+                                    <td>{{ $buku->buku_seo }}</td>
                                     <td>{{\Carbon\Carbon::parse($buku->tgl_terbit)->format('d/m/Y')}}</td>
                                     @if (Auth::check() && Auth::user()->level == 'admin')
                                     <td>

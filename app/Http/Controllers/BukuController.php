@@ -32,6 +32,30 @@ class BukuController extends Controller
     return view('index', compact('data_buku', 'no', 'jumlahData', 'totalHarga'));
 }
 
+public function listbuku(){
+    $batas = 5;
+
+    // Menggunakan paginate() untuk hasil paginasi
+    $data_buku = Buku::orderBy('id', 'asc')->paginate($batas);
+
+    // Hitung jumlah total harga menggunakan sum() pada hasil query
+    $totalHarga = Buku::sum('harga');
+
+    // Menggunakan metode total() pada objek paginasi untuk menghitung total data
+    $jumlahData = $data_buku->total();
+
+    // Menghitung nomor urut (no) dengan benar
+    $no = $batas * ($data_buku->currentPage() - 1);
+
+    return view('list_buku', compact('data_buku', 'no', 'jumlahData', 'totalHarga'));
+}
+
+public function galerbuku($buku_seo)
+{
+    $bukus = Buku::where('buku_seo', $buku_seo)->first();
+    $galeries = $bukus->galleries()->orderBy('id', 'desc')->paginate(5);
+    return view ('detail_buku', compact('bukus', 'galeries'));
+}
 
     public function search(Request $request)
 {
@@ -98,7 +122,8 @@ class BukuController extends Controller
             'harga'     => $request->harga,
             'tgl_terbit'=> $request->tgl_terbit,
             'filename'  => $fileName,
-            'filepath'  => '/storage/' . $filePath
+            'filepath'  => '/storage/' . $filePath,
+            'buku_seo'  => str_replace(' ', '-', strtolower($request->judul))
         ]);
     
         $buku = Buku::where('judul', $request->judul)->first();

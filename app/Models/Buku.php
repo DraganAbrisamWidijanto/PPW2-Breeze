@@ -17,12 +17,18 @@ class Buku extends Model
         'harga',
         'tgl_terbit',
         'filename',
-        'filepath'
+        'filepath',
+        'buku_seo'
     ];
     protected $dates = ['tgl_terbit'];
 
     public function galleries(): HasMany
     {
         return $this->hasMany(Gallery::class);
+    }
+
+    public function photos()
+    {
+        return $this->hasMany('App\Models\Buku', 'id', 'id');
     }
 }

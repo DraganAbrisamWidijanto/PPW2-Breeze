@@ -52,6 +52,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::delete('/buku/{buku}/gallery/{gallery}', [BukuController::class, 'deleteGallery'])->name('buku.deleteGallery');
+
+    //menuju halaman list buku
+    Route::get('/listBuku', [BukuController::class, 'listbuku'])->name('list.buku');
+    
+    //menuju halaman detail buku
+    Route::get('/detail-buku/{buku_seo}', [BukuController::class, 'galerbuku'])->name('galeri.buku');
     });
 });
 
