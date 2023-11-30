@@ -44,42 +44,58 @@
                                 <th>Judul Buku</th>
                                 <th>Penulis</th>
                                 <th>Harga</th>
-                                <th>Buku SEO</th>
+                                <th>Rating</th>
                                 <th>Tgl. Terbit DD/MM/YYYY</th>
                                 @if (Auth::check() && Auth::user()->level == 'admin')
-                                <th>Aksi</th>   
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($data_buku as $buku)
+                            @foreach($data_buku as $buku)
                                 <tr>
                                     <td>{{ ++$no }}</td>
-                                    <td><div>
-                                    <img class="h-full w-full object-cover object-center"
-                                    style="max-width: 240px; max-height: 320px;" 
-                                    src="{{asset($buku->filepath)}}"</div></td>
+                                    <td>
+                                        <div>
+                                            <img class="h-full w-full object-cover object-center"
+                                                style="max-width: 240px; max-height: 320px;" src="{{asset($buku->filepath)}}">
+                                        </div>
+                                    </td>
                                     <td>{{ $buku->judul }}</td>
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ "Rp ".number_format($buku->harga, 2, ',', '.') }}</td>
-                                    <td>{{ $buku->buku_seo }}</td>
-                                    <td>{{\Carbon\Carbon::parse($buku->tgl_terbit)->format('d/m/Y')}}</td>
-                                    @if (Auth::check() && Auth::user()->level == 'admin')
                                     <td>
-                                        <div class="btn-group" role="group" style="overflow-x: auto;">
-                                            <a href="{{ route('bukuEdit', $buku->id) }}" class="btn btn-primary"><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
-                                            &nbsp;
-                                            <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
-                                                @csrf
-                                                <button class="btn btn-danger" onClick="return confirm('Are you sure?')"><i class="fas fa-trash"></i>&nbsp;Hapus</button>
-                                            </form>
-                                        </div>
+                                        @php
+                                            $jumlahRating = $buku->rating_1 + $buku->rating_2 + $buku->rating_3 + $buku->rating_4 + $buku->rating_5;
+                                            $avgRating = ($jumlahRating > 0) ? ($buku->rating_1 * 1 + $buku->rating_2 * 2 + $buku->rating_3 * 3 + $buku->rating_4 * 4 + $buku->rating_5 * 5) / $jumlahRating : 0;
+                                        @endphp
+                    
+                                        @if ($avgRating > 0)
+                                            <p class="text-green-500">{{ number_format($avgRating, 2, '.', '') }}</p>
+                                        @else
+                                            <p class="text-red-500">Rating is not available.</p>
+                                        @endif
                                     </td>
+                                    <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d/m/Y') }}</td>
+                                    @if (Auth::check() && Auth::user()->level == 'admin')
+                                        <td>
+                                            <div class="btn-group" role="group" style="overflow-x: auto;">
+                                                <a href="{{ route('bukuEdit', $buku->id) }}" class="btn btn-primary"><i
+                                                        class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
+                                                &nbsp;
+                                                <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
+                                                    @csrf
+                                                    <button class="btn btn-danger" onClick="return confirm('Are you sure?')"><i
+                                                            class="fas fa-trash"></i>&nbsp;Hapus</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     @endif
                                 </tr>
-                        @endforeach
+                            @endforeach
                         </tbody>
                     </table>
+                    
                     <div>{{ $data_buku->links('vendor.pagination.bootstrap-5') }}</div>
                     <div><strong>Jumlah Buku : {{ $jumlahData }}</strong></div>
                     <div><strong>Jumlah Harga Buku : Rp {{ number_format($totalHarga, 0, ',', '.') }}</strong></div>

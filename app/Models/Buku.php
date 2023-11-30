@@ -31,4 +31,12 @@ class Buku extends Model
     {
         return $this->hasMany('App\Models\Buku', 'id', 'id');
     }
+    
+    public function getAvgRatingAttribute()
+{
+    $totalRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
+    $jumlahRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
+
+    return ($jumlahRating > 0) ? $totalRating / $jumlahRating : 0;
+}
 }

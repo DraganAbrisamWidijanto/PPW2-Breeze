@@ -14,7 +14,8 @@ class BukuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(){
+    public function index()
+{
     $batas = 5;
 
     // Menggunakan paginate() untuk hasil paginasi
@@ -25,12 +26,28 @@ class BukuController extends Controller
 
     // Menggunakan metode total() pada objek paginasi untuk menghitung total data
     $jumlahData = $data_buku->total();
-
+    
     // Menghitung nomor urut (no) dengan benar
     $no = $batas * ($data_buku->currentPage() - 1);
 
-    return view('index', compact('data_buku', 'no', 'jumlahData', 'totalHarga'));
+    // Menghitung jumlah rating
+    $jumlahRating1 = Buku::sum('rating_1');
+    $jumlahRating2 = Buku::sum('rating_2');
+    $jumlahRating3 = Buku::sum('rating_3');
+    $jumlahRating4 = Buku::sum('rating_4');
+    $jumlahRating5 = Buku::sum('rating_5');
+
+    $jumlahRating = $jumlahRating1 + $jumlahRating2 + $jumlahRating3 + $jumlahRating4 + $jumlahRating5;
+
+    if ($jumlahRating > 0) {
+        $avgRating = ($jumlahRating1 * 1 + $jumlahRating2 * 2 + $jumlahRating3 * 3 + $jumlahRating4 * 4 + $jumlahRating5 * 5) / $jumlahRating;
+    } else {
+        $avgRating = 0;
+    }
+
+    return view('index', compact('data_buku', 'no', 'jumlahData', 'totalHarga', 'avgRating'));
 }
+
 
 public function listbuku(){
     $batas = 5;
@@ -52,9 +69,9 @@ public function listbuku(){
 
 public function galerbuku($buku_seo)
 {
-    $bukus = Buku::where('buku_seo', $buku_seo)->first();
-    $galeries = $bukus->galleries()->orderBy('id', 'desc')->paginate(5);
-    return view ('detail_buku', compact('bukus', 'galeries'));
+    $buku = Buku::where('buku_seo', $buku_seo)->first();
+    $galeries = $buku->galleries()->orderBy('id', 'desc')->paginate(5);
+    return view ('detail_buku', compact('buku', 'galeries'));
 }
 
     public function search(Request $request)
@@ -232,4 +249,48 @@ public function galerbuku($buku_seo)
     
         return redirect()->back()->with('success', 'Gambar berhasil dihapus');
     }
+
+    public function storeRating(Request $request, $id)
+    {
+        $this->validate($request, [
+            'rating' => 'required|numeric|between:1,5',
+        ]);
+
+        $buku = Buku::findOrFail($id);
+
+        // Update rating pada buku
+        $ratingField = 'rating_' . $request->rating;
+        $buku->$ratingField += 1;
+        $buku->save();
+
+        return redirect()->route('galeri.buku', ['buku_seo' => $buku->buku_seo])
+            ->with('success', 'Rating berhasil disimpan.');
+    }
+
+
+    //Menambahkan buku ke daftar favorit
+    public function addToFavourite($id)
+{
+    $buku = Buku::findOrFail($id);
+    
+    // Cek apakah buku sudah ada di daftar favorit pengguna
+    if (auth()->user()->favouriteBooks->contains($buku)) {
+        return redirect()->back()->with('pesan', 'Buku sudah ada di daftar favorit Anda.');
+    }
+
+    // Tambahkan buku ke daftar favorit
+    auth()->user()->favouriteBooks()->attach($buku);
+
+    return redirect()->back()->with('pesan', 'Buku berhasil ditambahkan ke daftar favorit Anda.');
+}
+
+//Menampilkan buku favorit
+public function myFavouriteBooks()
+{
+    $favouriteBooks = auth()->user()->favouriteBooks;
+
+    return view('myfavouritebooks', compact('favouriteBooks'));
+}
+
+
 }

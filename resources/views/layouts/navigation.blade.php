@@ -23,6 +23,19 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('list.buku')" :active="request()->routeIs('list.buku')">
+                        {{ __('List Buku') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('buku.myFavouriteBooks')" :active="request()->routeIs('buku.myFavouriteBooks')">
+                        {{ __('Buku Favoritku') }}
+                    </x-nav-link>
+                </div>
+                
+
             </div>
 
             <!-- Settings Dropdown -->

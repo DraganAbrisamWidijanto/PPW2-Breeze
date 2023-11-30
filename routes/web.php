@@ -23,6 +23,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');    
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
 Route::middleware('auth')->group(function () {
     Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -58,6 +59,17 @@ Route::middleware('auth')->group(function () {
     
     //menuju halaman detail buku
     Route::get('/detail-buku/{buku_seo}', [BukuController::class, 'galerbuku'])->name('galeri.buku');
+
+    //menyimpan hasil rating
+    Route::post('/buku/{id}/storeRating', [BukuController::class, 'storeRating'])->name('buku.storeRating');
+
+    //menyimpan ke favorit
+    Route::post('/buku/{id}/addToFavourite', [BukuController::class, 'addToFavourite'])->name('buku.addToFavourite');
+
+    //menampilkan buku favorit
+    Route::get('/buku/myfavourite', [BukuController::class, 'myFavouriteBooks'])->name('buku.myFavouriteBooks');
+
+
     });
 });
 

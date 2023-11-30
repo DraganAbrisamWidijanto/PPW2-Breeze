@@ -1,4 +1,9 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('List Buku') }}
+        </h2>
+    </x-slot>
     <x-slot name="slot">
         <div class="container" style="margin-top: 16px">
             <div class="col-md-12">
@@ -19,6 +24,7 @@
                                     <th>id</th>
                                     <th>Gambar</th>
                                     <th>Judul Buku</th>
+                                    <th>Rating</th>
                                     <th>action</th>
                                 </tr>
                             </thead>
@@ -31,8 +37,20 @@
                                         style="max-width: 240px; max-height: 320px;" 
                                         src="{{asset($buku->filepath)}}"</div></td>
                                         <td>{{ $buku->judul }}</td>
+                                        <td>
+                                            @php
+                                                $jumlahRating = $buku->rating_1 + $buku->rating_2 + $buku->rating_3 + $buku->rating_4 + $buku->rating_5;
+                                                $avgRating = ($jumlahRating > 0) ? ($buku->rating_1 * 1 + $buku->rating_2 * 2 + $buku->rating_3 * 3 + $buku->rating_4 * 4 + $buku->rating_5 * 5) / $jumlahRating : 0;
+                                            @endphp
+                        
+                                            @if ($avgRating > 0)
+                                                <p class="text-green-500">{{ number_format($avgRating, 2, '.', '') }}</p>
+                                            @else
+                                                <p class="text-red-500">Rating is not available.</p>
+                                            @endif
+                                        </td>
                                         <td><div class="btn-group" role="group" style="overflow-x: auto;">
-                                            <a href="{{ route('galeri.buku', $buku->buku_seo) }}" class="btn btn-primary"><i class="fa-regular fa-pen-to-square"></i>&nbsp;Edit</a>
+                                            <a href="{{ route('galeri.buku', $buku->buku_seo) }}" class="btn btn-primary"><i class="fa-regular fa-pen-to-square"></i>&nbsp;Lihat Detail</a>
                                         </div>
                                     </td>
                                     </tr>
