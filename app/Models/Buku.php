@@ -31,12 +31,22 @@ class Buku extends Model
     {
         return $this->hasMany('App\Models\Buku', 'id', 'id');
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
     
     public function getAvgRatingAttribute()
-{
-    $totalRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
-    $jumlahRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
+    {
+        $totalRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
+        $jumlahRating = $this->rating_1 + $this->rating_2 + $this->rating_3 + $this->rating_4 + $this->rating_5;
 
-    return ($jumlahRating > 0) ? $totalRating / $jumlahRating : 0;
-}
+        return ($jumlahRating > 0) ? $totalRating / $jumlahRating : 0;
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriBuku::class, 'kategori_id');
+    }
 }

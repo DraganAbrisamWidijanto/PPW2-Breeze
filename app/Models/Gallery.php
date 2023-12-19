@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    protected $table = 'galeri';
+    protected $table = 'galleries';
     protected $fillable = ['id', 'nama_galeri', 'path', 'foto', 'buku_id'];
 
     public function buku(): BelongsTo

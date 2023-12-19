@@ -38,15 +38,10 @@
                                         src="{{asset($buku->filepath)}}"</div></td>
                                         <td>{{ $buku->judul }}</td>
                                         <td>
-                                            @php
-                                                $jumlahRating = $buku->rating_1 + $buku->rating_2 + $buku->rating_3 + $buku->rating_4 + $buku->rating_5;
-                                                $avgRating = ($jumlahRating > 0) ? ($buku->rating_1 * 1 + $buku->rating_2 * 2 + $buku->rating_3 * 3 + $buku->rating_4 * 4 + $buku->rating_5 * 5) / $jumlahRating : 0;
-                                            @endphp
-                        
-                                            @if ($avgRating > 0)
-                                                <p class="text-green-500">{{ number_format($avgRating, 2, '.', '') }}</p>
+                                            @if ($buku->avgRating > 0)
+                                                <span class="text-green-500">{{ number_format($buku->avgRating, 2, '.', '') }}</span>
                                             @else
-                                                <p class="text-red-500">Rating is not available.</p>
+                                                <span class="text-red-500">Belum ada rating</span>
                                             @endif
                                         </td>
                                         <td><div class="btn-group" role="group" style="overflow-x: auto;">

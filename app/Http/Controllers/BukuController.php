@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Buku;
 use App\Models\Gallery;
 use Illuminate\Support\facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 use Intervention\Image\Facades\Image;
 
 
@@ -31,18 +33,29 @@ class BukuController extends Controller
     $no = $batas * ($data_buku->currentPage() - 1);
 
     // Menghitung jumlah rating
-    $jumlahRating1 = Buku::sum('rating_1');
-    $jumlahRating2 = Buku::sum('rating_2');
-    $jumlahRating3 = Buku::sum('rating_3');
-    $jumlahRating4 = Buku::sum('rating_4');
-    $jumlahRating5 = Buku::sum('rating_5');
+    if (Schema::hasColumn('buku', 'rating_1') &&
+        Schema::hasColumn('buku', 'rating_2') &&
+        Schema::hasColumn('buku', 'rating_3') &&
+        Schema::hasColumn('buku', 'rating_4') &&
+        Schema::hasColumn('buku', 'rating_5')) {
 
-    $jumlahRating = $jumlahRating1 + $jumlahRating2 + $jumlahRating3 + $jumlahRating4 + $jumlahRating5;
+        $jumlahRating1 = Buku::sum('rating_1');
+        $jumlahRating2 = Buku::sum('rating_2');
+        $jumlahRating3 = Buku::sum('rating_3');
+        $jumlahRating4 = Buku::sum('rating_4');
+        $jumlahRating5 = Buku::sum('rating_5');
 
-    if ($jumlahRating > 0) {
-        $avgRating = ($jumlahRating1 * 1 + $jumlahRating2 * 2 + $jumlahRating3 * 3 + $jumlahRating4 * 4 + $jumlahRating5 * 5) / $jumlahRating;
+        $jumlahRating = $jumlahRating1 + $jumlahRating2 + $jumlahRating3 + $jumlahRating4 + $jumlahRating5;
+
+        if ($jumlahRating > 0) {
+            $avgRating = ($jumlahRating1 * 1 + $jumlahRating2 * 2 + $jumlahRating3 * 3 + $jumlahRating4 * 4 + $jumlahRating5 * 5) / $jumlahRating;
+        } else {
+            $avgRating = 0;
+        }
     } else {
-        $avgRating = 0;
+        // Handle error jika kolom tidak ditemukan
+        // Contoh: return view('error')->with('message', 'Kolom rating tidak ditemukan.');
+        $avgRating = 0; // Set nilai default jika kolom tidak ditemukan
     }
 
     return view('index', compact('data_buku', 'no', 'jumlahData', 'totalHarga', 'avgRating'));
@@ -292,5 +305,64 @@ public function myFavouriteBooks()
     return view('myfavouritebooks', compact('favouriteBooks'));
 }
 
+public function bukuPopuler()
+{
+    $bukuPopuler = Buku::orderByDesc(Buku::raw('rating_1 + rating_2 + rating_3 + rating_4 + rating_5'))->take(10)->get();
+
+    return view('populer', compact('bukuPopuler'));
+}
+
+public function kategoriIndex()
+{
+    $kategoriBuku = KategoriBuku::all();
+
+    return view('kategori.index', compact('kategoriBuku'));
+}
+
+public function tambahKategori(Request $request)
+{
+    $request->validate([
+        'nama_kategori' => 'required|string|max:255|unique:kategori_buku',
+    ]);
+
+    KategoriBuku::create(['nama_kategori' => $request->nama_kategori]);
+
+    return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
+}
+
+public function editKategori($id)
+{
+    $kategori = KategoriBuku::findOrFail($id);
+
+    return view('kategori.edit', compact('kategori'));
+}
+
+public function updateKategori(Request $request, $id)
+{
+    $request->validate([
+        'nama_kategori' => 'required|string|max:255|unique:kategori_buku,nama_kategori,'.$id,
+    ]);
+
+    $kategori = KategoriBuku::findOrFail($id);
+    $kategori->update(['nama_kategori' => $request->nama_kategori]);
+
+    return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+}
+
+public function hapusKategori($id)
+{
+    $kategori = KategoriBuku::findOrFail($id);
+    $kategori->delete();
+
+    return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+}
+
+public function bukuByKategori($kategori_id)
+{
+    $kategori = KategoriBuku::findOrFail($kategori_id);
+    $bukus = $kategori->bukus;
+
+    return view('kategori.buku', compact('kategori', 'bukus'));
+}
 
 }

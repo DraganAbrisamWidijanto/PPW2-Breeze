@@ -69,6 +69,13 @@ Route::middleware('auth')->group(function () {
     //menampilkan buku favorit
     Route::get('/buku/myfavourite', [BukuController::class, 'myFavouriteBooks'])->name('buku.myFavouriteBooks');
 
+    //menampilkan buku populer
+    Route::get('/buku-populer', [BukuController::class, 'bukuPopuler'])->name('buku.populer');
+
+    Route::get('/kategori', [BukuController::class, 'kategoriIndex'])->name('kategori.index');
+    Route::get('/kategori/create', [BukuController::class, 'tambahKategori'])->name('kategori.create');
+    Route::get('/kategori/{id}/edit', [BukuController::class, 'editKategori'])->name('kategori.edit');
+    Route::post('/kategori/{id}/hapus', [BukuController::class, 'hapusKategori'])->name('kategori.hapus');
 
     });
 });

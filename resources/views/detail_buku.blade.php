@@ -19,7 +19,7 @@
                             <p><span class="font-bold">Tanggal Terbit:</span> {{ $buku->tgl_terbit }}</p>
                             <p><span class="font-bold">Rating:</span>
                                 @if ($buku->avgRating > 0)
-                                    {{ number_format($buku->avgRating, 2, '.', '') }}
+                                    <span class="text-green-500">{{ number_format($buku->avgRating, 2, '.', '') }}</span>
                                 @else
                                     <span class="text-red-500">Belum ada rating</span>
                                 @endif
